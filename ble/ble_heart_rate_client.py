@@ -1,11 +1,11 @@
 import asyncio
 from bleak import BleakScanner, BleakClient
 
-HR_SERVICE_UUID = "0000180d-0000-1000-8000-00805f9b34fb"
-HR_MEASUREMENT_CHAR_UUID = "00002a37-0000-1000-8000-00805f9b34fb"
+SERVICE_UUID = "00005678-0000-1000-8000-00805f9b34fb"
+CHAR_UUID = "00002345-0000-1000-8000-00805f9b34fb"
 
-def handle_hr_notify(sender, data):
-    print(f"Heart Rate: {data[1]} bpm")
+def handle_notify(sender, data):
+    print(data)
 
 async def main():
     print("Scanning for BLE devices...")
@@ -24,12 +24,12 @@ async def main():
             for char in service.characteristics:
                 print(f"  [Characteristic] {char.uuid} — {char.properties}")
 
-        print("Subscribing to Heart Rate notifications...")
-        await client.start_notify(HR_MEASUREMENT_CHAR_UUID, handle_hr_notify)
+        print("Subscribing to notifications...")
+        await client.start_notify(CHAR_UUID, handle_notify)
+        #value = await client.read_gatt_char(CHAR_UUID)
+        #print(value)
 
-        print("Waiting for heart rate updates... Press Ctrl+C to stop.")
-        await asyncio.sleep(60)
-
-        await client.stop_notify(HR_MEASUREMENT_CHAR_UUID)
+        print("Waiting for updates... Press Ctrl+C to stop.")
+        await asyncio.sleep(480)
 
 asyncio.run(main())
